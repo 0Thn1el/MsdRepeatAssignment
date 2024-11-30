@@ -25,7 +25,7 @@ class SettingsActivity : AppCompatActivity() {
         val listView: ListView = findViewById(R.id.listView)
 
         val listitems = arrayOf(
-            "Themes", "2", "3", "4", "5"
+            "Themes"
         )
 
         val listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listitems)
@@ -33,10 +33,18 @@ class SettingsActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
-        listView.setOnItemClickListener { parent, view, position, id ->
+        listView.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.getItemAtPosition(position) as String
-            Toast.makeText(this, "You have clicked on: $selectedItem", Toast.LENGTH_SHORT).show()
+            if (selectedItem == "Themes") {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.main, ThemeFragment())
+                    .addToBackStack(null) // Add to back stack so the user can navigate back
+                    .commit()
+            } else {
+                Toast.makeText(this, "You clicked on: $selectedItem", Toast.LENGTH_SHORT).show()
+            }
         }
+
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
