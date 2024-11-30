@@ -7,13 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
-    <TextView
-        android:id="@+id/appSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Settings Screen"
-        android:textSize="24sp"
-        android:layout_gravity="center" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </ListView>
+
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

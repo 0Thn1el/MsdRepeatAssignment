@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.settings -> {
                     startActivity(Intent(this, SettingsActivity::class.java))
                     true
+
                 }
                 else -> false
             }
