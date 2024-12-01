@@ -28,10 +28,7 @@ class ProfileActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.profile -> {
-                    // Already in the profile activity
-                    true
-                }
+                R.id.profile -> true // Already in the profile activity
                 R.id.home -> {
                     startActivity(Intent(this, HomeActivity::class.java))
                     true
@@ -44,19 +41,31 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
-        // Get references to UI elements
-        val usernameTextView = findViewById<TextView>(R.id.username)
-        val emailTextView = findViewById<TextView>(R.id.email)
-        val editProfileButton = findViewById<Button>(R.id.editProfileButton)
-
-        // Set initial user data
-        usernameTextView.text = "John Doe"
-        emailTextView.text = "johndoe@example.com"
-
         // Handle Edit Profile button click
+        val editProfileButton = findViewById<Button>(R.id.editProfileButton)
         editProfileButton.setOnClickListener {
-            Toast.makeText(this, "Edit Profile clicked!", Toast.LENGTH_SHORT).show()
-            // Add logic to open an Edit Profile screen or dialog
+            // Load EditUserFragment
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main, EditUserFragment())
+                .addToBackStack(null) // Add to backstack to allow navigation back
+                .commit()
         }
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Update displayed user data whenever the activity resumes
+        loadUserData()
+    }
+
+    private fun loadUserData() {
+        val sharedPreferences = getSharedPreferences("UserSettings", MODE_PRIVATE)
+        val username = sharedPreferences.getString("username", "John Doe")
+        val email = sharedPreferences.getString("email", "johndoe@example.com")
+
+        findViewById<TextView>(R.id.username).text = username
+        findViewById<TextView>(R.id.email).text = email
     }
 }
