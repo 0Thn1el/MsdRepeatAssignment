@@ -2,6 +2,9 @@ package com.example.msd_project
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,17 +16,20 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_profile)
+
+        // Apply edge-to-edge insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
+        // Set up BottomNavigationView
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
+                    // Already in the profile activity
                     true
                 }
                 R.id.home -> {
@@ -36,6 +42,21 @@ class ProfileActivity : AppCompatActivity() {
                 }
                 else -> false
             }
+        }
+
+        // Get references to UI elements
+        val usernameTextView = findViewById<TextView>(R.id.username)
+        val emailTextView = findViewById<TextView>(R.id.email)
+        val editProfileButton = findViewById<Button>(R.id.editProfileButton)
+
+        // Set initial user data
+        usernameTextView.text = "John Doe"
+        emailTextView.text = "johndoe@example.com"
+
+        // Handle Edit Profile button click
+        editProfileButton.setOnClickListener {
+            Toast.makeText(this, "Edit Profile clicked!", Toast.LENGTH_SHORT).show()
+            // Add logic to open an Edit Profile screen or dialog
         }
     }
 }

@@ -7,11 +7,13 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class SettingsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,28 +26,33 @@ class SettingsActivity : AppCompatActivity() {
 
         val listView: ListView = findViewById(R.id.listView)
 
-        val listitems = arrayOf(
-            "Themes"
+        // Add "Font Size" as an option
+        val listItems = arrayOf(
+            "Themes",
+            "Font Size"
         )
 
-        val listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listitems)
+        val listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listItems)
         listView.adapter = listAdapter
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
+        // Handle ListView item clicks
         listView.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.getItemAtPosition(position) as String
-            if (selectedItem == "Themes") {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.main, ThemeFragment())
-                    .addToBackStack(null) // Add to back stack so the user can navigate back
-                    .commit()
-            } else {
-                Toast.makeText(this, "You clicked on: $selectedItem", Toast.LENGTH_SHORT).show()
+            when (selectedItem) {
+                "Themes" -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main, ThemeFragment())
+                        .addToBackStack(null)
+                        .commit()
+                }
+                "Font Size" -> toggleFontSize()
+                else -> Toast.makeText(this, "You clicked on: $selectedItem", Toast.LENGTH_SHORT).show()
             }
         }
 
-
+        // Handle BottomNavigationView item clicks
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.profile -> {
@@ -63,5 +70,33 @@ class SettingsActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        // Apply saved font size preference when activity starts
+        applyFontSize()
+    }
+
+    private fun toggleFontSize() {
+        // Toggle font size preference
+        val sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
+        val isLargeFont = sharedPreferences.getBoolean("isLargeFont", false)
+        sharedPreferences.edit().putBoolean("isLargeFont", !isLargeFont).apply()
+
+        // Apply the new font size and notify the user
+        applyFontSize()
+        Toast.makeText(
+            this,
+            if (!isLargeFont) "Switched to Large Font Size" else "Switched to Normal Font Size",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun applyFontSize() {
+        // Apply the font size preference
+        val sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
+        val isLargeFont = sharedPreferences.getBoolean("isLargeFont", false)
+        val scale = if (isLargeFont) 1.3f else 1.0f
+        val configuration = resources.configuration
+        configuration.fontScale = scale
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 }
