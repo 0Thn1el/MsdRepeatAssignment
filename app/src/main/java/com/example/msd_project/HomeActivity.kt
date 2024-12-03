@@ -13,13 +13,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlin.math.sqrt
 
 class HomeActivity : AppCompatActivity(), SensorEventListener {
-    private var sensorManager: SensorManager? = null
-    private var stepSensor: Sensor? = null
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
     private var running = false
-    private var totalSteps = 0f
-    private var previousTotalSteps = 0f
+    private val stepDelay = 250
+    private var stepCount = 0
+    private var smoothedZAxis = 0f
+    private val lowPassFilterFactor = 0.8f
+    private var lastStepTime: Long = 0
+    private val minStepThreshold = 0.6f // Minimum Z-axis value for step detection
+    private val maxStepThreshold = 1.5f // Maximum Z-axis value for step detection
     private lateinit var tvStepsTaken: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,10 +44,10 @@ class HomeActivity : AppCompatActivity(), SensorEventListener {
 
         // Initialize sensor manager and check for the step counter sensor
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
-        if (stepSensor == null) {
-            Toast.makeText(this, "Step Counter Sensor not available", Toast.LENGTH_LONG).show()
+        if (accelerometer == null) {
+            Toast.makeText(this, "Accelerometer not available", Toast.LENGTH_LONG).show()
         }
 
         // Setup bottom navigation
@@ -64,52 +70,42 @@ class HomeActivity : AppCompatActivity(), SensorEventListener {
             }
         }
 
-        // Reset step count on long click
-        tvStepsTaken.setOnLongClickListener {
-            resetSteps()
-            true
-        }
+
     }
 
     override fun onResume() {
         super.onResume()
-        running = true
-
-        // Register sensor listener only if the sensor is available
-        if (stepSensor != null) {
-            sensorManager?.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI)
+        // Register the accelerometer listener
+        accelerometer?.let {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        // Unregister listener to save battery
-        if (stepSensor != null) {
-            sensorManager?.unregisterListener(this)
-        }
+        // Unregister the accelerometer listener
+        sensorManager.unregisterListener(this)
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (running && event != null) {
-            // Total steps since device boot
-            totalSteps = event.values[0]
+        if (event != null) {
+            // Apply low-pass filter to Z-axis acceleration
+            smoothedZAxis = lowPassFilterFactor * smoothedZAxis + (1 - lowPassFilterFactor) * event.values[2]
 
-            // Calculate current steps by subtracting the previous total
-            val currentSteps = (totalSteps - previousTotalSteps).toInt()
+            val currentTime = System.currentTimeMillis()
+            // Detect steps based on Z-axis acceleration and time delay
+            if (smoothedZAxis in minStepThreshold..maxStepThreshold && (currentTime - lastStepTime) > stepDelay) {
+                stepCount++
+                //stepCountTextView.text = "Steps: $stepCount"
 
-            // Update the step count on the screen
-            tvStepsTaken.text = currentSteps.toString()
+                lastStepTime = currentTime // Update the last step time
+
+            }
         }
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Not used for this sensor type
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+        TODO("Not yet implemented")
     }
 
-    private fun resetSteps() {
-        // Save the total steps as the new "starting point"
-        previousTotalSteps = totalSteps
-        tvStepsTaken.text = "0"
-        Toast.makeText(this, "Steps reset successfully!", Toast.LENGTH_SHORT).show()
-    }
 }
