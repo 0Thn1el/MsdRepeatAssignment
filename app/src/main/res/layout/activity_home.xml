@@ -8,78 +8,83 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+    <!-- Title Text -->
     <TextView
+        android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="20dp"
+        android:layout_marginTop="20dp"
         android:text="Step Counter"
         android:textColor="#3a9bdc"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Goal text -->
+    <TextView
+        android:id="@+id/tv_goal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Goal: 8000"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <!-- Circular Progress Container -->
     <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <!-- Middle Circle  -->
+        android:id="@+id/progressContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_goal">
+
+        <!-- Progress Circle -->
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:background="@drawable/circular_shape"
             android:progressDrawable="@drawable/circular_progress_bar" />
 
-        <!-- Accelerometer -->
+        <!-- Steps Count -->
         <TextView
             android:id="@+id/tv_stepsTaken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="200dp"
-            android:layout_marginTop="350dp"
-            android:text="0"
-            android:textColor="@color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/steps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Steps"
+            android:text="0"
             android:textColor="@color/black"
-            android:textSize="28sp"
+            android:textSize="48sp"
             android:textStyle="bold" />
 
-
+        <!-- Steps Label -->
+        <TextView
+            android:id="@+id/tv_stepsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_stepsTaken"
+            android:layout_centerHorizontal="true"
+            android:text="Steps"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
     </RelativeLayout>
-
-    <!-- Goal text -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="170dp"
-        android:text="Goal: 8000"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/relativeLayout" />
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
