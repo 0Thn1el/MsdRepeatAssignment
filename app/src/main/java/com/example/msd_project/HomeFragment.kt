@@ -184,12 +184,12 @@ class HomeFragment : Fragment(), SensorEventListener {
             fun bind(workout: Workout) {
                 // Bind workout data to views
                 itemView.findViewById<TextView>(R.id.workoutType).text = workout.type
-                itemView.findViewById<TextView>(R.id.workoutDuration).text = "${workout.duration} min"
+                itemView.findViewById<TextView>(R.id.workoutDuration).text = "${workout.duration} min/s"
                 workout.distance?.let {
-                    itemView.findViewById<TextView>(R.id.workoutDistance).text = "%.2f km".format(it)
+                    itemView.findViewById<TextView>(R.id.workoutDistance).text = "%.2f km/s".format(it)
                 }
                 workout.calories?.let {
-                    itemView.findViewById<TextView>(R.id.workoutCalories).text = "$it kcal"
+                    itemView.findViewById<TextView>(R.id.workoutCalories).text = "$it kcal/s"
                 }
                 workout.notes?.let {
                     itemView.findViewById<TextView>(R.id.workoutNotes).text = it
