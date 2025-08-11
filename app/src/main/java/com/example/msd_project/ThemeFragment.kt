@@ -24,9 +24,20 @@ class ThemeFragment : Fragment() {
 
         // Load saved theme preference
         val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences("ThemePrefs", AppCompatActivity.MODE_PRIVATE)
-        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+        var isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
 
-        // Set the Switch state based on the saved preference
+        if (!sharedPreferences.contains("isDarkMode")) {
+            isDarkMode = when (AppCompatDelegate.getDefaultNightMode()) {
+                AppCompatDelegate.MODE_NIGHT_YES -> true
+                AppCompatDelegate.MODE_NIGHT_NO -> false
+                else -> resources.configuration.uiMode and
+                        android.content.res.Configuration.UI_MODE_NIGHT_MASK ==
+                        android.content.res.Configuration.UI_MODE_NIGHT_YES
+            }
+        }
+
+
+            // Set the Switch state based on the saved preference
         themeSwitch.isChecked = isDarkMode
 
         // Handle theme switch toggling
