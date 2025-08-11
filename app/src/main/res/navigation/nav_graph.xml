@@ -29,11 +29,13 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.msd_project.SettingsFragment"
         android:label="Settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
 
-    <action
-        android:id="@+id/action_settingsFragment_to_themeFragment"
-        app:destination="@id/themeFragment" />
+        <!-- Move action INSIDE settingsFragment -->
+        <action
+            android:id="@+id/action_settingsFragment_to_themeFragment"
+            app:destination="@id/themeFragment" />
+    </fragment>
 
     <!-- Edit User Fragment -->
     <fragment
@@ -41,5 +43,12 @@
         android:name="com.example.msd_project.EditUserFragment"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_edit_user" />
+
+    <!-- Theme Fragment-->
+    <fragment
+        android:id="@+id/themeFragment"
+        android:name="com.example.msd_project.ThemeFragment"
+        android:label="Theme"
+        tools:layout="@layout/fragment_theme" />
 
 </navigation>

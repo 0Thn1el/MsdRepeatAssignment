@@ -12,10 +12,27 @@ import androidx.fragment.app.Fragment
 
 class EditUserFragment : Fragment() {
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout first
+        return inflater.inflate(R.layout.fragment_edit_user, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val sharedPreferences = requireActivity().getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
+
+        // Load current values
+        view.findViewById<EditText>(R.id.usernameEditText).setText(
+            sharedPreferences.getString("username", "")
+        )
+        view.findViewById<EditText>(R.id.emailEditText).setText(
+            sharedPreferences.getString("email", "")
+        )
 
         view.findViewById<Button>(R.id.saveButton).setOnClickListener {
             val username = view.findViewById<EditText>(R.id.usernameEditText).text.toString()
