@@ -12,40 +12,29 @@ import androidx.fragment.app.Fragment
 
 class EditUserFragment : Fragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_edit_user, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val usernameEditText = view.findViewById<EditText>(R.id.usernameEditText)
-        val emailEditText = view.findViewById<EditText>(R.id.emailEditText)
-        val saveButton = view.findViewById<Button>(R.id.saveButton)
+        val sharedPreferences = requireActivity().getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
 
-        // Load saved data
-        val sharedPreferences = requireContext().getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
-        usernameEditText.setText(sharedPreferences.getString("username", ""))
-        emailEditText.setText(sharedPreferences.getString("email", ""))
+        view.findViewById<Button>(R.id.saveButton).setOnClickListener {
+            val username = view.findViewById<EditText>(R.id.usernameEditText).text.toString()
+            val email = view.findViewById<EditText>(R.id.emailEditText).text.toString()
 
-        // Save updated data
-        saveButton.setOnClickListener {
-            val username = usernameEditText.text.toString().trim()
-            val email = emailEditText.text.toString().trim()
-
-            if (username.isEmpty() || email.isEmpty()) {
-                Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
+            if (username.isBlank() || email.isBlank()) {
+                Toast.makeText(requireContext(), "All fields required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            sharedPreferences.edit().apply {
-                putString("username", username)
-                putString("email", email)
-                apply()
-            }
+            sharedPreferences.edit()
+                .putString("username", username)
+                .putString("email", email)
+                .apply()
 
-            Toast.makeText(requireContext(), "Details Updated Successfully", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Saved!", Toast.LENGTH_SHORT).show()
+
+            // Navigate back
+            parentFragmentManager.popBackStack()
         }
-
-        return view
     }
 }
